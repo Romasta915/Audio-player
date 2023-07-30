@@ -24,46 +24,72 @@ let intervalId // сет інтервал для обновлення рендж
 
 let currentIndex = 0
 
-let songsArr = [
-    '1 Karna_-_Vtrolom_(musmore.com).mp3',
-    '2 thousand_foot_krutch_-_we_are_(zvukoff.ru).mp3',
-    '3 Twenty One Pilots - Lane Boy.mp3',
-    '4 Ai Mori Teardrops (Bring Me The Horizon cover)_(allmp3.su).mp3',
-    '5 disturbed_-_decadance_(zvukoff.ru).mp3',
-    '6 Elvis Presley - jailhouse rock.mp3',
-    '7 FACE_-_YUmorist_(musmore.com).mp3',
-    '8 Rammstein_-_Du_Hast_(musmore.com).mp3',
+class localSong {
+    title
+    filePath
+    posterPath
+    author
+
+    constructor(_title, _filePath, _posterPath, _author) {
+        this.title = _title;
+        this.filePath = _filePath;
+        this.posterPath = _posterPath;
+        this.author = _author;
+    }
+}
+
+const localMusik = [
+    new localSong(
+        'Гуцул метал',
+        '1 Karna_-_Vtrolom_(musmore.com).mp3',
+        '1 karna.jpg',
+        'Карна'
+    ),
+    new localSong(
+        'We are',
+        '2 thousand_foot_krutch_-_we_are_(zvukoff.ru).mp3',
+        '2 we are.jpg',
+        'Thousand foot krutch'
+    ),
+    new localSong(
+        'Lane boy',
+        '3 Twenty One Pilots - Lane Boy.mp3',
+        '3 Twenty One Pilots - Lane Boy.jpeg',
+        'Twenty one pisots'
+    ),
+    new localSong(
+        'Teardrops',
+        '4 Ai Mori Teardrops (Bring Me The Horizon cover)_(allmp3.su).mp3',
+        '4 bring me the horizon.jpg',
+        'Bring me the horizon (Ai mori cover)'
+    ),
+    new localSong(
+        'Dacadane',
+        '5 disturbed_-_decadance_(zvukoff.ru).mp3',
+        '5 decadance.jpg',
+        'Distributed'
+    ),
+    new localSong(
+        'Jailhouse rock',
+        '6 Elvis Presley - jailhouse rock.mp3',
+        '6 Elvis.jpg',
+        'Elvis presley'
+    ),
+    new localSong(
+        'Юморист',
+        '7 FACE_-_YUmorist_(musmore.com).mp3',
+        '7 face.jpg',
+        'FACE'
+    ),
+    new localSong(
+        'Du hast',
+        '8 Rammstein_-_Du_Hast_(musmore.com).mp3',
+        '8 rammstain.jpg',
+        'Rammstain'
+    )
 ]
-let postersArr = [
-    '1 karna.jpg',
-    '2 we are.jpg',
-    '3 Twenty One Pilots - Lane Boy.jpeg',
-    '4 bring me the horizon.jpg',
-    '5 decadance.jpg',
-    '6 Elvis.jpg',
-    '7 face.jpg',
-    '8 rammstain.jpg',
-]
-let songTitleArr = [
-    'Гуцул метал',
-    'We are',
-    'Lane boy',
-    'Teardrops',
-    'Dacadane',
-    'Jailhouse rock',
-    'Юморист',
-    'Du hast',
-]
-let songWriterArr = [
-    'Карна',
-    'Thousand foot krutch',
-    'Twenty one pisots',
-    'Bring me the horizon (Ai mori cover)',
-    'Distributed',
-    'Elvis presley',
-    'FACE',
-    'Rammstain',
-]
+
+console.log(localMusik);
 
 function nextGroup() {
     currentIndex++
@@ -168,11 +194,10 @@ audioTeg.addEventListener('ended', nextGroup)
 let contMenu = document.getElementById('contMenu')
 contMenu.style.padding = '10px'
 
-for (let i = 0; i < songsArr.length; i++) {
+for (let i = 0; i < localMusik.length; i++) {
     let item = document.createElement('div')
     contMenu.appendChild(item)
     item.setAttribute('class', 'items')
-    let items = document.getElementsByClassName('items')
     item.style.display = 'flex'
     item.style.margin = '10px 0'
     item.style.padding = '10px'
@@ -186,14 +211,16 @@ for (let i = 0; i < songsArr.length; i++) {
     let imgLine = document.createElement('img')
 
     imgSection.appendChild(imgLine)
-    imgLine.src = `./img/${postersArr[i]}`
+    // imgLine.src = `./img/${postersArr[i]}`
+    imgLine.src = `./img/${localMusik[i].posterPath}`
     imgLine.style.width = '40px'
     imgLine.style.height = '40px'
 
     let itemTitle = document.createElement('div')
     item.appendChild(itemTitle)
-    itemTitle.innerText = songTitleArr[i]
-    itemTitle.style.fontSize = '20px' 
+    // itemTitle.innerText = songTitleArr[i]
+    itemTitle.innerText = localMusik[i].title
+    itemTitle.style.fontSize = '20px'
     itemTitle.style.marginLeft = '20px'
     itemTitle.style.display = 'flex'
     itemTitle.style.alignItems = 'center'
@@ -201,13 +228,13 @@ for (let i = 0; i < songsArr.length; i++) {
 
     let itemSongwriter = document.createElement('marquee')
     item.appendChild(itemSongwriter)
-    itemSongwriter.innerText = songWriterArr[i]
-    itemSongwriter.style.fontSize = '20px' 
+    // itemSongwriter.innerText = songWriterArr[i]
+    itemSongwriter.innerText = localMusik[i].author
+    itemSongwriter.style.fontSize = '20px'
     itemSongwriter.style.marginLeft = '20px'
     itemSongwriter.style.display = 'flex'
     itemSongwriter.style.alignItems = 'center'
     itemSongwriter.style.fontWeight = 'bold'
-
 }
 
 

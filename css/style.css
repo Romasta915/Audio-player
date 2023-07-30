@@ -5,15 +5,38 @@
 }
 
 body {
-    /* background-color: rgb(114, 93, 66); */
     display: flex;
     justify-content: space-around;
     align-items: center;
-    height: 760px;
-    background-image: url(../img/background.jpg);
+    min-height: 700px;
+    height: 100vh;
+    background-image: url(../assets/img/background.jpg);
+    background-repeat: no-repeat;
     background-size: cover;
     font-family: monospace;
-    /* background-image: radial-gradient(circle, black, white); */
+}
+
+.marquee {
+    overflow: hidden;
+    height: 50px;
+    /* Встановлюємо висоту контейнера, щоб визначити область відображення тексту */
+}
+
+.marquee {
+    animation: marquee 3s linear infinite;
+    /* Анімація буде тривати 10 секунд з лінійною інтерполяцією */
+}
+
+@keyframes marquee {
+    from {
+        transform: translateX(0);
+        /* Початкова позиція тексту */
+    }
+
+    to {
+        transform: translateX(-100%);
+        /* Кінцева позиція тексту (вгору на 100% від висоти контейнера) */
+    }
 }
 
 .colors {
@@ -179,18 +202,18 @@ background-color: rgb(10,27,106); */
 
 #btnPrev {
     transform: rotate(180deg);
-    background-image: url(../icons/prew_next.png);
+    background-image: url(../assets/icons/prew_next.png);
 }
 
 #btnPlay {
-    background-image: url(../icons/play.png);
+    background-image: url(../assets/icons/play.png);
     margin: 0 20px;
     width: 50px;
     height: 50px;
 }
 
 #btnNext {
-    background-image: url(../icons/prew_next.png);
+    background-image: url(../assets/icons/prew_next.png);
 }
 
 .cont-volumeRange {
@@ -229,14 +252,14 @@ background-color: rgb(10,27,106); */
 }
 
 .lessVolume {
-    background-image: url(../icons/no_volume.png);
+    background-image: url(../assets/icons/no_volume.png);
     background-size: cover;
     height: 20px;
     width: 20px;
 }
 
 .higherVolume {
-    background-image: url(../icons/speaker.png);
+    background-image: url(../assets/icons/speaker.png);
     background-size: cover;
     height: 20px;
     width: 20px;
