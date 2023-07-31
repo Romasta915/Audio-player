@@ -5,57 +5,76 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-  <link rel="stylesheet" href="./css/style.css">
+  <title>Audio Player</title>
+  <link rel="shortcut icon" href="./assets/icons/logo.png" type="image/x-icon">
+  <link rel="stylesheet" href="./css/app.css">
 </head>
 
 <body>
 
-  <div class="cont-menu" id="contMenu">
-    <h3 class="marquee" style="text-align: center; font-size: 30px;">Musik list</h3>
-  </div>
-
-  <div class="cont-audioPlayer">
-    <div class="cont-img">
-      <img id="songPoster" src="./assets/img/1 karna.jpg" alt="">
+  <div class="audioPlayer">
+    <div class="loader">
+      <div class="indeterminate-progress-bar">
+        <div class="indeterminate-progress-bar__progress"></div>
+      </div>
+      <div class="text">song downloading...</div>
     </div>
-    <marquee behavior="1000">
-      <div id="songTitle">
-        Гуцул метал
-      </div>
-      <div id="songwriter">
-        Карна
-      </div>
-    </marquee>
-    <div class="cont-durationRange">
-      <div class="wrapper-range">
+
+    <div class="imgCont">
+      <img id="songPoster" src="./assets/img/1 karna.jpg" alt="musik image">
+    </div>
+
+    <div id="titleAuthor" class="marqueeCont" title="search on google">
+      <div class="marquee" id="songTitle">Гуцул метал</div>
+      <div class="marquee" id="songwriter">Карна</div>
+    </div>
+
+    <div class="durationRangeCont">
+      <div class="durationRange-wrapper">
         <input type="range" id="durationRange" value="0">
       </div>
-      <div class="cont-durations">
-        <div id="currentDuration" class="startEndElement">0:00</div>
-        <div id="allDuration" class="startEndElement">0</div>
+
+      <div class="durationNumbers">
+        <div id="currentDuration">0:00</div>
+        <div id="allDuration">0:00</div>
       </div>
     </div>
-    <div class="cont-controlButtons">
-      <div class="wrapControls">
+
+    <div class="controlCont">
+      <div class="buttonsWrap">
         <div class="controlsBtn" id="btnPrev"></div>
         <div class="controlsBtn" id="btnPlay"></div>
         <div class="controlsBtn" id="btnNext"></div>
-        <audio id="audioTag">
-          <source id="audioElement" src="./assets/songs/1 Karna_-_Vtrolom_(musmore.com).mp3">
-        </audio>
       </div>
+      <audio id="audioTag">
+        <source id="audioElement" src="./assets/songs/1 Karna_-_Vtrolom_(musmore.com).mp3">
+      </audio>
     </div>
-    <div class="cont-volumeRange">
-      <div class="wrap-volume">
-        <div class="lessVolume"></div>
-        <input id="volumeRange" type="range" value="0.3" step="0.05">
-        <div class="higherVolume"></div>
+
+    <div class="volumeRangeCont">
+      <div class="lessVolume"></div>
+      <input id="volumeRange" type="range" value="0.30" step="0.05">
+      <div class="higherVolume"></div>
+    </div>
+
+    <!-- Musik List -->
+    <button id="btnSongMenu">menu</button>
+
+    <div class="songListMenu" id="songListMenu">
+      
+      <div class="chooseThemeCont">
+        Theme:
+        <select name="playerTheme" id="playerTheme">
+          <option value="crimson-red">Crimson red</option>
+          <option value="crimson-red">Поки нічо більше</option>
+        </select>
       </div>
+
     </div>
   </div>
 
-  <!-- <script src="./js/script.js"></script> -->
+
+
   <script src="./js/app.js"></script>
 </body>
 

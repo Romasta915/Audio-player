@@ -4,19 +4,22 @@
 
 // !!! PLAYER LOGIC
 // !* variable assignment
-let audioTag: HTMLAudioElement = document.getElementById('audioTag') as HTMLAudioElement
-let songPoster: HTMLImageElement = document.getElementById('songPoster') as HTMLImageElement
-let btnPlay: HTMLElement = document.getElementById('btnPlay')
-let btnPrev: HTMLElement = document.getElementById('btnPrev')
-let btnNext: HTMLElement = document.getElementById('btnNext')
-let currentDuration: HTMLElement = document.getElementById('currentDuration')
-let allDuration: HTMLElement = document.getElementById('allDuration')
-let durationRange: HTMLInputElement = document.getElementById('durationRange') as  HTMLInputElement
-let volumeRange: HTMLInputElement = document.getElementById('volumeRange') as  HTMLInputElement
+const audioTag: HTMLAudioElement = document.getElementById('audioTag') as HTMLAudioElement
+const songPoster: HTMLImageElement = document.getElementById('songPoster') as HTMLImageElement
+const btnPlay: HTMLElement = document.getElementById('btnPlay')
+const btnPrev: HTMLElement = document.getElementById('btnPrev')
+const btnNext: HTMLElement = document.getElementById('btnNext')
+const currentDuration: HTMLElement = document.getElementById('currentDuration')
+const allDuration: HTMLElement = document.getElementById('allDuration')
+const durationRange: HTMLInputElement = document.getElementById('durationRange') as HTMLInputElement
+const volumeRange: HTMLInputElement = document.getElementById('volumeRange') as HTMLInputElement
 volumeRange.min = '0'
 volumeRange.max = '1'
-let songTitle: HTMLElement = document.getElementById('songTitle')
-let songwriter: HTMLElement = document.getElementById('songwriter')
+const titleAuthor: HTMLElement = document.getElementById('titleAuthor')
+const songTitle: HTMLElement = document.getElementById('songTitle')
+const songwriter: HTMLElement = document.getElementById('songwriter')
+const rootStyles: CSSStyleDeclaration = getComputedStyle(document.documentElement);
+let pageLoader: HTMLElement = document.querySelector('.loader')
 let intervalId: number
 let currentIndex = 0
 
@@ -51,7 +54,7 @@ const localMusik = [
     'Lane boy',
     '3 Twenty One Pilots - Lane Boy.mp3',
     '3 Twenty One Pilots - Lane Boy.jpeg',
-    'Twenty one pisots'
+    'Twenty one pilots'
   ),
   new localSong(
     'Teardrops',
@@ -87,8 +90,14 @@ const localMusik = [
 
 
 // !* functions
-function nextGroup() {
+function nextSong() {
+  const item = document.querySelectorAll('.songMenuItem')
+  for (let j = 0; j < localMusik.length; j++) {
+    item[j].classList.remove('active')
+  }
+
   currentIndex > localMusik.length - 1 ? currentIndex = 0 : currentIndex++
+  item[currentIndex].classList.add('active')
 
   songTitle.innerText = localMusik[currentIndex].title
   audioTag.src = `./assets/songs/${localMusik[currentIndex].filePath}`
@@ -107,8 +116,14 @@ function nextGroup() {
   }
 }
 
-function prevGroup() {
+function prevSong() {
+  const item = document.querySelectorAll('.songMenuItem')
+  for (let j = 0; j < localMusik.length; j++) {
+    item[j].classList.remove('active')
+  }
+
   currentIndex < 0 ? currentIndex = localMusik.length - 1 : currentIndex--
+  item[currentIndex].classList.add('active')
 
   songTitle.innerText = localMusik[currentIndex].title
   audioTag.src = `./assets/songs/${localMusik[currentIndex].filePath}`
@@ -139,6 +154,9 @@ function drawingTheDuration() {
   allDuration.innerText = splitTime(audioTag.duration)
   durationRange.min = '0'
   durationRange.max = audioTag.duration.toString()
+
+  console.log('Цифри відмальовано');
+
 }
 
 function pauseOrContinue() {
@@ -161,63 +179,140 @@ function pauseOrContinue() {
 
 
 // !* listeners
-audioTag.addEventListener('loadedmetadata', drawingTheDuration);
-audioTag.addEventListener('ended', nextGroup)
-btnNext.addEventListener('click', nextGroup)
-document.addEventListener('keydown', (event) => { if (event.key === 'ArrowRight') nextGroup() })
-btnPrev.addEventListener('click', prevGroup)
-document.addEventListener('keydown', (event) => { if (event.key === 'ArrowLeft') prevGroup() })
+audioTag.addEventListener("loadstart", () => {
+  pageLoader.style.display = "flex";
+})
+audioTag.addEventListener('loadedmetadata', () => {
+  drawingTheDuration()
+  pageLoader.style.display = "none";
+  audioTag.volume = 0.30
+});
+audioTag.addEventListener("error", () => {
+  pageLoader.style.display = "none";
+  alert('download error :(')
+})
+
+audioTag.addEventListener('ended', nextSong)
+
+btnNext.addEventListener('click', nextSong)
+document.addEventListener('keydown', (event) => { if (event.key === 'ArrowRight') nextSong() })
+
+btnPrev.addEventListener('click', prevSong)
+document.addEventListener('keydown', (event) => { if (event.key === 'ArrowLeft') prevSong() })
+
 btnPlay.addEventListener('click', pauseOrContinue)
-document.addEventListener('keydown', function (event) { if (event.key === ' ') pauseOrContinue() });
+document.addEventListener('keydown', function (event) { if (event.key === ' ') pauseOrContinue() })
+
 durationRange.addEventListener('input', () => {
   audioTag.currentTime = parseInt(durationRange.value)
   currentDuration.innerText = splitTime(audioTag.currentTime)
 })
+
 volumeRange.addEventListener('input', () => {
-  audioTag.volume = parseInt(volumeRange.value)
+  audioTag.volume = parseFloat(volumeRange.value)
+})
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'ArrowUp') {
+    if (audioTag.volume < 1) {
+      audioTag.volume = audioTag.volume + 0.05
+      volumeRange.value = (parseFloat(volumeRange.value) + 0.05).toString()
+    }
+  }
+})
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'ArrowDown') {
+    if (audioTag.volume > 0) {
+      audioTag.volume = audioTag.volume - 0.05
+      volumeRange.value = (parseFloat(volumeRange.value) - 0.05).toString()
+    }
+  }
+})
+
+titleAuthor.addEventListener('click', () => {
+  window.open(`https://www.google.com/search?q=${localMusik[currentIndex].author}, ${localMusik[currentIndex].title}`, '_blank');
 })
 
 
 // !!! menu logic
-let contMenu = document.getElementById('contMenu')
-contMenu.style.padding = '10px'
+// !* variable assignment
+const songListMenu: HTMLElement = document.getElementById('songListMenu')
+const btnSongMenu: HTMLButtonElement = document.getElementById('btnSongMenu') as HTMLButtonElement
+let menuIsOpen = false
+let songsIsPainted = false
 
-for (let i = 0; i < localMusik.length; i++) {
-  let item = document.createElement('div')
-  contMenu.appendChild(item)
-  item.setAttribute('class', 'items')
-  item.style.display = 'flex'
-  item.style.margin = '10px 0'
-  item.style.padding = '10px'
-  item.style.borderRadius = '10px'
-  item.style.background = 'linear-gradient(to right, #240b36, #c31432)'
+// !* listeners
+btnSongMenu.addEventListener('click', () => {
+  if (menuIsOpen === true) {
+    songListMenu.classList.remove('open')
+    menuIsOpen = !menuIsOpen
+    btnSongMenu.innerText = 'menu'
+  } else {
+    songListMenu.classList.add('open')
+    menuIsOpen = !menuIsOpen
+    btnSongMenu.innerText = '✖️'
+    songsIsPainted ? null : drawingList(), switchSongOnClick()
+    songsIsPainted = true
+  }
+})
 
-  let imgSection = document.createElement('div')
-  item.appendChild(imgSection)
-  imgSection.style.width = '40px'
-  imgSection.style.height = '40px'
-  let imgLine = document.createElement('img')
+// !* functions
+function drawingList() {
+  for (let i = 0; i < localMusik.length; i++) {
+    const item = document.createElement('div')
+    songListMenu.appendChild(item)
+    item.classList.add('songMenuItem')
+    item.setAttribute('data-index', (i + 1).toString())
 
-  imgSection.appendChild(imgLine)
-  imgLine.src = `./assets/img/${localMusik[i].posterPath}`
-  imgLine.style.width = '40px'
-  imgLine.style.height = '40px'
+    const itemImg = document.createElement('img')
+    item.appendChild(itemImg)
+    itemImg.src = `./assets/img/${localMusik[i].posterPath}`
 
-  let itemTitle = document.createElement('div')
-  item.appendChild(itemTitle)
-  itemTitle.innerText = localMusik[i].title
-  itemTitle.style.fontSize = '20px'
-  itemTitle.style.marginLeft = '20px'
-  itemTitle.style.display = 'flex'
-  itemTitle.style.alignItems = 'center'
-  itemTitle.style.fontWeight = 'bold'
+    const textContainer = document.createElement('div')
+    item.appendChild(textContainer)
+    textContainer.classList.add('textContainer')
 
-  let itemSongwriter = document.createElement('marquee')
-  item.appendChild(itemSongwriter)
-  itemSongwriter.innerText = localMusik[i].author
-  itemSongwriter.style.fontSize = '20px'
-  itemSongwriter.style.marginLeft = '20px'
-  itemSongwriter.style.display = 'flex'
-  itemSongwriter.style.alignItems = 'center'
-  itemSongwriter.style.fontWeight = 'bold'
+    const itemTitle = document.createElement('div')
+    textContainer.appendChild(itemTitle)
+    itemTitle.innerText = localMusik[i].title
+    itemTitle.classList.add('itemTitle')
+
+    const itemAuthor = document.createElement('div')
+    textContainer.appendChild(itemAuthor)
+    itemAuthor.innerText = localMusik[i].author
+    itemAuthor.classList.add('itemAuthor')
+  }
+}
+
+function switchSongOnClick() {
+  for (let i = 0; i < localMusik.length; i++) {
+    const item = document.querySelectorAll('.songMenuItem')
+    if (audioTag.paused == true) {
+      item[0].classList.add('active')
+    }
+
+    item[i].addEventListener('click', () => {
+      songTitle.innerText = localMusik[i].title
+      audioTag.src = `./assets/songs/${localMusik[i].filePath}`
+      songPoster.src = `./assets/img/${localMusik[i].posterPath}`
+      songwriter.innerText = localMusik[i].author
+      currentIndex = i
+
+      if (audioTag.paused) {
+        audioTag.play()
+        songPoster.style.animation = 'rotateDisk 7.5s 0.25s linear infinite'
+        btnPlay.style.backgroundImage = 'url(./assets/icons/pause.png)'
+
+        intervalId = setInterval(() => {
+          currentDuration.innerText = splitTime(audioTag.currentTime)
+          durationRange.value = audioTag.currentTime.toString()
+        }, 1000)
+      }
+
+      for (let j = 0; j < localMusik.length; j++) {
+        item[j].classList.remove('active')
+      }
+
+      item[i].classList.add('active')
+    })
+  }
 }
