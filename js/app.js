@@ -35,12 +35,15 @@ const localMusik = [
     new localSong('Du hast', '8 Rammstein_-_Du_Hast_(musmore.com).mp3', '8 rammstain.jpg', 'Rammstain')
 ];
 function nextSong() {
-    const item = document.querySelectorAll('.songMenuItem');
-    for (let j = 0; j < localMusik.length; j++) {
-        item[j].classList.remove('active');
+    currentIndex++;
+    currentIndex > localMusik.length - 1 ? currentIndex = 0 : null;
+    if (menuIsOpen) {
+        const item = document.querySelectorAll('.songMenuItem');
+        for (let j = 0; j < localMusik.length; j++) {
+            item[j].classList.remove('active');
+        }
+        item[currentIndex].classList.add('active');
     }
-    currentIndex > localMusik.length - 1 ? currentIndex = 0 : currentIndex++;
-    item[currentIndex].classList.add('active');
     songTitle.innerText = localMusik[currentIndex].title;
     audioTag.src = `./assets/songs/${localMusik[currentIndex].filePath}`;
     songPoster.src = `./assets/img/${localMusik[currentIndex].posterPath}`;
@@ -56,12 +59,15 @@ function nextSong() {
     }
 }
 function prevSong() {
-    const item = document.querySelectorAll('.songMenuItem');
-    for (let j = 0; j < localMusik.length; j++) {
-        item[j].classList.remove('active');
+    currentIndex--;
+    currentIndex < 0 ? currentIndex = localMusik.length - 1 : null;
+    if (menuIsOpen) {
+        const item = document.querySelectorAll('.songMenuItem');
+        for (let j = 0; j < localMusik.length; j++) {
+            item[j].classList.remove('active');
+        }
+        item[currentIndex].classList.add('active');
     }
-    currentIndex < 0 ? currentIndex = localMusik.length - 1 : currentIndex--;
-    item[currentIndex].classList.add('active');
     songTitle.innerText = localMusik[currentIndex].title;
     audioTag.src = `./assets/songs/${localMusik[currentIndex].filePath}`;
     songPoster.src = `./assets/img/${localMusik[currentIndex].posterPath}`;
@@ -87,7 +93,8 @@ function drawingTheDuration() {
     allDuration.innerText = splitTime(audioTag.duration);
     durationRange.min = '0';
     durationRange.max = audioTag.duration.toString();
-    console.log('Цифри відмальовано');
+    document.title = `${localMusik[currentIndex].title} | Audio player`;
+    console.log(`Metadata: ${currentIndex + 1}.${localMusik[currentIndex].title} uploaded, The numbers are drawn`);
 }
 function pauseOrContinue() {
     if (audioTag.paused) {
@@ -116,7 +123,7 @@ audioTag.addEventListener('loadedmetadata', () => {
 });
 audioTag.addEventListener("error", () => {
     pageLoader.style.display = "none";
-    alert('download error :(');
+    alert('download error try reload page :(');
 });
 audioTag.addEventListener('ended', nextSong);
 btnNext.addEventListener('click', nextSong);
@@ -157,19 +164,16 @@ titleAuthor.addEventListener('click', () => {
 const songListMenu = document.getElementById('songListMenu');
 const btnSongMenu = document.getElementById('btnSongMenu');
 let menuIsOpen = false;
-let songsIsPainted = false;
+let renderSongsOneTime = false;
+if (localStorage.getItem('songMenuIsOpen') === 'true') {
+    openSongsMenu();
+}
 btnSongMenu.addEventListener('click', () => {
-    if (menuIsOpen === true) {
-        songListMenu.classList.remove('open');
-        menuIsOpen = !menuIsOpen;
-        btnSongMenu.innerText = 'menu';
+    if (menuIsOpen == true) {
+        closeSongsMenu();
     }
     else {
-        songListMenu.classList.add('open');
-        menuIsOpen = !menuIsOpen;
-        btnSongMenu.innerText = '✖️';
-        songsIsPainted ? null : drawingList(), switchSongOnClick();
-        songsIsPainted = true;
+        openSongsMenu();
     }
 });
 function drawingList() {
@@ -221,5 +225,19 @@ function switchSongOnClick() {
             item[i].classList.add('active');
         });
     }
+}
+function openSongsMenu() {
+    songListMenu.classList.add('open');
+    btnSongMenu.innerText = '❌';
+    localStorage.setItem('songMenuIsOpen', 'true');
+    menuIsOpen = !menuIsOpen;
+    renderSongsOneTime ? null : drawingList(), switchSongOnClick();
+    renderSongsOneTime = true;
+}
+function closeSongsMenu() {
+    songListMenu.classList.remove('open');
+    localStorage.setItem('songMenuIsOpen', 'false');
+    btnSongMenu.innerText = 'menu';
+    menuIsOpen = !menuIsOpen;
 }
 //# sourceMappingURL=app.js.map

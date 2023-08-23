@@ -91,13 +91,16 @@ const localMusik = [
 
 // !* functions
 function nextSong() {
-  const item = document.querySelectorAll('.songMenuItem')
-  for (let j = 0; j < localMusik.length; j++) {
-    item[j].classList.remove('active')
-  }
+  currentIndex++
+  currentIndex > localMusik.length - 1 ? currentIndex = 0 : null
 
-  currentIndex > localMusik.length - 1 ? currentIndex = 0 : currentIndex++
-  item[currentIndex].classList.add('active')
+  if (menuIsOpen) {
+    const item = document.querySelectorAll('.songMenuItem')
+    for (let j = 0; j < localMusik.length; j++) {
+      item[j].classList.remove('active')
+    }
+    item[currentIndex].classList.add('active')
+  }
 
   songTitle.innerText = localMusik[currentIndex].title
   audioTag.src = `./assets/songs/${localMusik[currentIndex].filePath}`
@@ -117,13 +120,16 @@ function nextSong() {
 }
 
 function prevSong() {
-  const item = document.querySelectorAll('.songMenuItem')
-  for (let j = 0; j < localMusik.length; j++) {
-    item[j].classList.remove('active')
-  }
+  currentIndex--
+  currentIndex < 0 ? currentIndex = localMusik.length - 1 : null
 
-  currentIndex < 0 ? currentIndex = localMusik.length - 1 : currentIndex--
-  item[currentIndex].classList.add('active')
+  if (menuIsOpen) {
+    const item = document.querySelectorAll('.songMenuItem')
+    for (let j = 0; j < localMusik.length; j++) {
+      item[j].classList.remove('active')
+    }
+    item[currentIndex].classList.add('active')
+  }
 
   songTitle.innerText = localMusik[currentIndex].title
   audioTag.src = `./assets/songs/${localMusik[currentIndex].filePath}`
@@ -154,9 +160,8 @@ function drawingTheDuration() {
   allDuration.innerText = splitTime(audioTag.duration)
   durationRange.min = '0'
   durationRange.max = audioTag.duration.toString()
-
-  console.log('Цифри відмальовано');
-
+  document.title = `${localMusik[currentIndex].title} | Audio player`
+  console.log(`Metadata: ${currentIndex + 1}.${localMusik[currentIndex].title} uploaded, The numbers are drawn`);
 }
 
 function pauseOrContinue() {
@@ -189,7 +194,7 @@ audioTag.addEventListener('loadedmetadata', () => {
 });
 audioTag.addEventListener("error", () => {
   pageLoader.style.display = "none";
-  alert('download error :(')
+  alert('download error try reload page :(')
 })
 
 audioTag.addEventListener('ended', nextSong)
@@ -237,21 +242,23 @@ titleAuthor.addEventListener('click', () => {
 // !* variable assignment
 const songListMenu: HTMLElement = document.getElementById('songListMenu')
 const btnSongMenu: HTMLButtonElement = document.getElementById('btnSongMenu') as HTMLButtonElement
-let menuIsOpen = false
-let songsIsPainted = false
+let menuIsOpen: boolean = false
+let renderSongsOneTime: boolean = false
+
 
 // !* listeners
+if (localStorage.getItem('songMenuIsOpen') === 'true') {
+  openSongsMenu()
+}
+// console.log(menuIsOpen);
+
 btnSongMenu.addEventListener('click', () => {
-  if (menuIsOpen === true) {
-    songListMenu.classList.remove('open')
-    menuIsOpen = !menuIsOpen
-    btnSongMenu.innerText = 'menu'
+
+  // console.log(menuIsOpen);
+  if (menuIsOpen == true) {
+    closeSongsMenu()
   } else {
-    songListMenu.classList.add('open')
-    menuIsOpen = !menuIsOpen
-    btnSongMenu.innerText = '✖️'
-    songsIsPainted ? null : drawingList(), switchSongOnClick()
-    songsIsPainted = true
+    openSongsMenu()
   }
 })
 
@@ -311,8 +318,23 @@ function switchSongOnClick() {
       for (let j = 0; j < localMusik.length; j++) {
         item[j].classList.remove('active')
       }
-
       item[i].classList.add('active')
     })
   }
+}
+
+function openSongsMenu() {
+  songListMenu.classList.add('open')
+  btnSongMenu.innerText = '❌'
+  localStorage.setItem('songMenuIsOpen', 'true')
+  menuIsOpen = !menuIsOpen
+  renderSongsOneTime ? null : drawingList(), switchSongOnClick()
+  renderSongsOneTime = true
+}
+
+function closeSongsMenu() {
+  songListMenu.classList.remove('open')
+  localStorage.setItem('songMenuIsOpen', 'false')
+  btnSongMenu.innerText = 'menu'
+  menuIsOpen = !menuIsOpen
 }
