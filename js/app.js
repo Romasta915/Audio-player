@@ -186,35 +186,35 @@ const plThemes = [
         primaryColor: '#394670',
         tintColor: '#ff424b',
         playerBackground: 'rgb(22, 38, 61, 0.7)',
-        backImage: '../assets/img/default.jpg'
+        backImage: 'url(./assets/img/default.jpg)'
     },
     {
         tName: 'cold-blue',
         primaryColor: '#191d88',
         tintColor: '#d5b084',
         playerBackground: 'rgb(0, 80, 136, 0.7)',
-        backImage: '../assets/img/cold-blue.jpg'
+        backImage: 'url(./assets/img/cold-blue.jpg)'
     },
     {
         tName: 'inferno-red',
         primaryColor: '#640a13',
         tintColor: '#eb372f',
         playerBackground: 'rgb(12, 12, 14, 0.7)',
-        backImage: '../assets/img/inferno-red.jpg'
+        backImage: 'url(./assets/img/inferno-red.jpg)'
     },
     {
         tName: 'calm-green',
         primaryColor: '#a2ff86',
         tintColor: '#17594a',
         playerBackground: 'rgb(26, 93, 26, 0.7)',
-        backImage: '../assets/img/calm-green.jpg'
+        backImage: 'url(./assets/img/calm-green.jpg)'
     },
     {
         tName: 'abstract-red',
         primaryColor: '#450505',
         tintColor: '#d40d10',
         playerBackground: 'rgb(25, 25, 25, 0.7)',
-        backImage: '../assets/img/abstract-red.jpg'
+        backImage: 'url(./assets/img/abstract-red.jpg)'
     }
 ];
 if (localStorage.getItem('songMenuIsOpen') === 'true') {
@@ -233,7 +233,7 @@ if (localStorage.getItem('pageTheme') != null) {
     document.documentElement.style.setProperty('--primary-color', res.primaryColor);
     document.documentElement.style.setProperty('--tint-color', res.tintColor);
     document.documentElement.style.setProperty('--playerBackground', res.playerBackground);
-    document.body.style.backgroundImage = `url(${res.backImage})`;
+    document.body.style.backgroundImage = `${res.backImage}`;
     playerTheme.value = localStorage.getItem('pageTheme');
 }
 playerTheme.addEventListener('change', () => {
@@ -243,7 +243,7 @@ playerTheme.addEventListener('change', () => {
     document.documentElement.style.setProperty('--primary-color', res.primaryColor);
     document.documentElement.style.setProperty('--tint-color', res.tintColor);
     document.documentElement.style.setProperty('--playerBackground', res.playerBackground);
-    document.body.style.backgroundImage = `url(${res.backImage})`;
+    document.body.style.backgroundImage = `${res.backImage}`;
 });
 function drawingList() {
     for (let i = 0; i < localMusik.length; i++) {
