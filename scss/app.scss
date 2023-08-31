@@ -11,12 +11,6 @@
   --playerBackground: rgb(10, 27, 106, 0.6);
 }
 
-.colors {
-  background-color: rgb(2, 167, 98);
-  background-color: rgb(0, 138, 78);
-  background-color: rgb(0, 112, 62);
-}
-
 body {
   width: 100%;
   min-height: 700px;
@@ -26,9 +20,11 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-image: url(../assets/img/background.jpg);
+  background-image: url('../assets/img/default.jpg');
+  // background-image: url('../assets/img/inferno-red.jpg');
   background-repeat: no-repeat;
   background-size: cover;
+  transition: 2s all;
 }
 
 // !* animations
@@ -252,7 +248,7 @@ body {
         border-radius: 100%;
 
         &:hover {
-          background-color: #0a1b6a;
+          background-color: var(--tint-color);
           transition: .3s all;
         }
       }
@@ -330,6 +326,44 @@ body {
   overflow-y: scroll;
   font-size: 20px;
 
+  .hint {
+    position: absolute;
+    top: 7px;
+    right: 10px;
+    font-size: 20px;
+    height: 30px;
+    background-color: var(--tint-color);
+    border-top: 2px solid black;
+    border-right: 2px solid black;
+    border-bottom: 1px solid white;
+    border-left: 1px solid white;
+    font-family: 'Impact', Courier, monospace;
+    padding: 3px;
+    cursor: help;
+
+    &:hover {
+      .text {
+        transition: .3s all;
+        transform: scale(1) translateY(0%);
+      }
+    }
+
+    .text {
+      position: absolute;
+      top: -5px;
+      right: 100%;
+      width: 300px;
+      min-height: 200px;
+      font-family: 'Impact', Courier, monospace;
+      background: linear-gradient(to left, var(--tint-color), var(--primary-color));
+      padding: 10px;
+      border-radius: 10px;
+      border: 3px solid black;
+      transform: scale(0) translateY(-100%);
+      transition: .3s all;
+    }
+  }
+
   &::-webkit-scrollbar {
     width: 6px;
   }
@@ -368,7 +402,7 @@ body {
     margin: 10px 0;
     cursor: pointer;
     transition: .3s all;
-    
+
     &:hover {
       outline: white 3px solid;
       box-shadow: 0 0 10px 5px white;

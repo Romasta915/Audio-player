@@ -21,7 +21,10 @@ const songwriter: HTMLElement = document.getElementById('songwriter')
 const rootStyles: CSSStyleDeclaration = getComputedStyle(document.documentElement);
 let pageLoader: HTMLElement = document.querySelector('.loader')
 let intervalId: number
-let currentIndex = 0
+let currentIndex: number = 0
+if (parseInt(localStorage.getItem('currentSongIndex')) > -1) {
+  currentIndex = parseInt(localStorage.getItem('currentSongIndex'))
+}
 
 class localSong {
   title: string;
@@ -94,13 +97,9 @@ function nextSong() {
   currentIndex++
   currentIndex > localMusik.length - 1 ? currentIndex = 0 : null
 
-  if (menuIsOpen) {
-    const item = document.querySelectorAll('.songMenuItem')
-    for (let j = 0; j < localMusik.length; j++) {
-      item[j].classList.remove('active')
-    }
-    item[currentIndex].classList.add('active')
-  }
+  if (menuIsOpen) determiningActiveSongInMenu()
+
+  localStorage.setItem('currentSongIndex', currentIndex.toString())
 
   songTitle.innerText = localMusik[currentIndex].title
   audioTag.src = `./assets/songs/${localMusik[currentIndex].filePath}`
@@ -123,13 +122,9 @@ function prevSong() {
   currentIndex--
   currentIndex < 0 ? currentIndex = localMusik.length - 1 : null
 
-  if (menuIsOpen) {
-    const item = document.querySelectorAll('.songMenuItem')
-    for (let j = 0; j < localMusik.length; j++) {
-      item[j].classList.remove('active')
-    }
-    item[currentIndex].classList.add('active')
-  }
+  localStorage.setItem('currentSongIndex', currentIndex.toString())
+
+  if (menuIsOpen) determiningActiveSongInMenu()
 
   songTitle.innerText = localMusik[currentIndex].title
   audioTag.src = `./assets/songs/${localMusik[currentIndex].filePath}`
@@ -182,15 +177,29 @@ function pauseOrContinue() {
   }
 }
 
+function determiningActiveSongInMenu() {
+  const item = document.querySelectorAll('.songMenuItem')
+  for (let j = 0; j < localMusik.length; j++) {
+    item[j].classList.remove('active')
+  }
+  item[currentIndex].classList.add('active')
+}
+
 
 // !* listeners
+if (parseInt(localStorage.getItem('currentSongIndex')) > -1) {
+  songTitle.innerText = localMusik[currentIndex].title
+  audioTag.src = `./assets/songs/${localMusik[currentIndex].filePath}`
+  songPoster.src = `./assets/img/${localMusik[currentIndex].posterPath}`
+  songwriter.innerText = localMusik[currentIndex].author
+}
+
 audioTag.addEventListener("loadstart", () => {
   pageLoader.style.display = "flex";
 })
 audioTag.addEventListener('loadedmetadata', () => {
   drawingTheDuration()
   pageLoader.style.display = "none";
-  audioTag.volume = 0.30
 });
 audioTag.addEventListener("error", () => {
   pageLoader.style.display = "none";
@@ -213,8 +222,13 @@ durationRange.addEventListener('input', () => {
   currentDuration.innerText = splitTime(audioTag.currentTime)
 })
 
+if (localStorage.getItem('currentVolume') != null) {
+  audioTag.volume = parseFloat(localStorage.getItem('currentVolume'))
+  volumeRange.value = localStorage.getItem('currentVolume').toString()
+} else audioTag.volume = 0.30
 volumeRange.addEventListener('input', () => {
   audioTag.volume = parseFloat(volumeRange.value)
+  localStorage.setItem('currentVolume', volumeRange.value)
 })
 document.addEventListener('keydown', (event) => {
   if (event.key === 'ArrowUp') {
@@ -244,22 +258,73 @@ const songListMenu: HTMLElement = document.getElementById('songListMenu')
 const btnSongMenu: HTMLButtonElement = document.getElementById('btnSongMenu') as HTMLButtonElement
 let menuIsOpen: boolean = false
 let renderSongsOneTime: boolean = false
-
+const playerTheme: HTMLSelectElement = document.getElementById('playerTheme') as HTMLSelectElement
+const plThemes = [
+  {
+    tName: 'default',
+    primaryColor: '#394670',
+    tintColor: '#ff424b',
+    playerBackground: 'rgb(22, 38, 61, 0.7)',
+    backImage: '../assets/img/default.jpg'
+  },
+  {
+    tName: 'cold-blue',
+    primaryColor: '#191d88',
+    tintColor: '#d5b084',
+    playerBackground: 'rgb(0, 80, 136, 0.7)',
+    backImage: '../assets/img/cold-blue.jpg'
+  },
+  {
+    tName: 'inferno-red',
+    primaryColor: '#640a13',
+    tintColor: '#eb372f',
+    playerBackground: 'rgb(12, 12, 14, 0.7)',
+    backImage: '../assets/img/inferno-red.jpg'
+  },
+  {
+    tName: 'calm-green',
+    primaryColor: '#a2ff86',
+    tintColor: '#17594a',
+    playerBackground: 'rgb(26, 93, 26, 0.7)',
+    backImage: '../assets/img/calm-green.jpg'
+  },
+  {
+    tName: 'abstract-red',
+    primaryColor: '#450505',
+    tintColor: '#d40d10',
+    playerBackground: 'rgb(25, 25, 25, 0.7)',
+    backImage: '../assets/img/abstract-red.jpg'
+  }
+]
 
 // !* listeners
 if (localStorage.getItem('songMenuIsOpen') === 'true') {
   openSongsMenu()
 }
-// console.log(menuIsOpen);
-
 btnSongMenu.addEventListener('click', () => {
-
-  // console.log(menuIsOpen);
   if (menuIsOpen == true) {
     closeSongsMenu()
   } else {
     openSongsMenu()
   }
+})
+
+if (localStorage.getItem('pageTheme') != null) {
+  let res = plThemes.find((e) => { return e.tName === localStorage.getItem('pageTheme') })
+  document.documentElement.style.setProperty('--primary-color', res.primaryColor)
+  document.documentElement.style.setProperty('--tint-color', res.tintColor)
+  document.documentElement.style.setProperty('--playerBackground', res.playerBackground)
+  document.body.style.backgroundImage = `url(${res.backImage})`
+  playerTheme.value = localStorage.getItem('pageTheme')
+}
+playerTheme.addEventListener('change', () => {
+  let val = playerTheme.value
+  let res = plThemes.find((e) => { return e.tName === val })
+  localStorage.setItem('pageTheme', `${res.tName}`)
+  document.documentElement.style.setProperty('--primary-color', res.primaryColor)
+  document.documentElement.style.setProperty('--tint-color', res.tintColor)
+  document.documentElement.style.setProperty('--playerBackground', res.playerBackground)
+  document.body.style.backgroundImage = `url(${res.backImage})`
 })
 
 // !* functions
@@ -293,8 +358,12 @@ function drawingList() {
 function switchSongOnClick() {
   for (let i = 0; i < localMusik.length; i++) {
     const item = document.querySelectorAll('.songMenuItem')
-    if (audioTag.paused == true) {
-      item[0].classList.add('active')
+    if (menuIsOpen == true) {
+      if (parseInt(localStorage.getItem('currentSongIndex')) > -1) {
+        item[parseInt(localStorage.getItem('currentSongIndex'))].classList.add('active')
+      } else {
+        item[0].classList.add('active')
+      }
     }
 
     item[i].addEventListener('click', () => {
@@ -303,6 +372,8 @@ function switchSongOnClick() {
       songPoster.src = `./assets/img/${localMusik[i].posterPath}`
       songwriter.innerText = localMusik[i].author
       currentIndex = i
+
+      localStorage.setItem('currentSongIndex', currentIndex.toString())
 
       if (audioTag.paused) {
         audioTag.play()
@@ -325,7 +396,7 @@ function switchSongOnClick() {
 
 function openSongsMenu() {
   songListMenu.classList.add('open')
-  btnSongMenu.innerText = '❌'
+  btnSongMenu.innerText = 'close'
   localStorage.setItem('songMenuIsOpen', 'true')
   menuIsOpen = !menuIsOpen
   renderSongsOneTime ? null : drawingList(), switchSongOnClick()
