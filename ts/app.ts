@@ -235,6 +235,7 @@ document.addEventListener('keydown', (event) => {
     if (audioTag.volume < 1) {
       audioTag.volume = audioTag.volume + 0.05
       volumeRange.value = (parseFloat(volumeRange.value) + 0.05).toString()
+      localStorage.setItem('currentVolume', volumeRange.value)
     }
   }
 })
@@ -243,6 +244,7 @@ document.addEventListener('keydown', (event) => {
     if (audioTag.volume > 0) {
       audioTag.volume = audioTag.volume - 0.05
       volumeRange.value = (parseFloat(volumeRange.value) - 0.05).toString()
+      localStorage.setItem('currentVolume', volumeRange.value)
     }
   }
 })
@@ -266,6 +268,13 @@ const plThemes = [
     tintColor: '#ff424b',
     playerBackground: 'rgb(22, 38, 61, 0.7)',
     backImage: 'url(./assets/img/default.jpg)'
+  },
+  {
+    tName: 'holy-random',
+    primaryColor: '#394670',
+    tintColor: '#ffffff',
+    playerBackground: 'rgb(22, 38, 61, 0.7)',
+    backImage: 'url(https://picsum.photos/1980/1020)'
   },
   {
     tName: 'cold-blue',
@@ -294,6 +303,13 @@ const plThemes = [
     tintColor: '#d40d10',
     playerBackground: 'rgb(25, 25, 25, 0.7)',
     backImage: 'url(./assets/img/abstract-red.jpg)'
+  },
+  {
+    tName: 'galaxy-pink',
+    primaryColor: '#cb388b',
+    tintColor: '#9b4795',
+    playerBackground: 'rgb(25, 25, 25, 0.6)',
+    backImage: 'url(./assets/img/galaxy-pink.jpg)'
   }
 ]
 
